@@ -1,0 +1,135 @@
+# Chandan Cash Calculator - (Book Management System)
+
+The Book Management System is a simple and easy-to-use tool to manage your money and transactions.  
+You can create books, track money coming in (credit) and going out (debit), and see visual stats.  
+It is fully responsive, so you can use it on desktop, tablet, or mobile.  
+This project is perfect for personal finance or small business bookkeeping.
+
+---
+
+## How It Works (Step by Step)
+
+1. **Create a Book**  
+   - A book is like a personal or business account.  
+   - You can add a name, total amount, and optional description.  
+
+2. **Add Money (Credit) or Send Money (Debit)**  
+   - Credit: Add money to the book.  
+   - Debit: Send money from the book.  
+   - Each transaction can have a payment mode (Cash, GPay, PhonePe, Paytm, or Account Transfer) and description.  
+
+3. **Activate or Deactivate a Book**  
+   - Active books can receive or send money.  
+   - Deactivated books cannot process transactions.  
+
+4. **Delete a Book**  
+   - Permanently remove the book and all its transactions.  
+
+5. **View Stats**  
+   - See your money visually with Pie, Bar, and Line charts.  
+   - Pie chart: Shows how much money is debit vs credit.  
+   - Bar chart: Shows total by payment mode.  
+   - Line chart: Shows how your balance changes over time.  
+
+---
+
+## Workflow Diagram
+
+![Book Management Workflow](public/flow-diagram.png)  
+
+*Visual representation of the process from creating a book → adding/sending transactions → viewing stats.*
+
+---
+
+## Project Structure
+
+```
+
+root/
+│
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── utils/
+│   ├── .env
+│   ├── package.json
+│   └── server.js
+│
+├── frontend/
+│   ├── public/
+│   │   └── flow-diagram.png
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── App.js
+│   │   ├── index.js
+│   │   └── App.css
+│   ├── package.json
+│   └── tailwind.config.js
+│
+└── README.md
+
+````
+
+---
+
+## How to Run the Project
+
+### Backend
+```bash
+cd backend
+npm install
+````
+
+Create a `.env` file:
+
+```
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+```
+
+Start the server:
+
+```bash
+npm run dev
+```
+
+Server runs at `http://localhost:5000`.
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+Frontend runs at `http://localhost:3000`.
+
+---
+
+## Features
+
+* Signup/Login for secure access
+* Create, activate, deactivate, and delete books
+* Add or send money with multiple payment modes
+* Filter transactions by date or payment mode
+* Visual stats for better money management
+* Fully responsive design
+
+---
+
+## Technologies Used
+
+**Backend:** Node.js, Express.js, MongoDB, Mongoose, JWT, bcryptjs, dotenv
+**Frontend:** React.js, React Router DOM, Axios, Tailwind CSS, Recharts
+
+---
+
+## License
+
+MIT License
