@@ -1,9 +1,17 @@
 # Chandan Cash Calculator - (Book Management System)
 
-The Book Management System is a simple and easy-to-use tool to manage your money and transactions.  
+The Chandan Cash Calculator is a simple and easy-to-use tool to manage your money and transactions.  
 You can create books, track money coming in (credit) and going out (debit), and see visual stats.  
 It is fully responsive, so you can use it on desktop, tablet, or mobile.  
 This project is perfect for personal finance or small business bookkeeping.
+
+---
+
+## Live Links & Repository
+
+- **Frontend (Vercel):** [https://chandan-cash-calculator.vercel.app/](https://chandan-cash-calculator.vercel.app/)  
+- **Backend (Render):** [https://chandan-cash-calculator.onrender.com/](https://chandan-cash-calculator.onrender.com/)  
+- **GitHub Repository:** [https://github.com/Saichandanyadav/chandan-cash-calculator](https://github.com/Saichandanyadav/chandan-cash-calculator)  
 
 ---
 
@@ -27,17 +35,18 @@ This project is perfect for personal finance or small business bookkeeping.
 
 5. **View Stats**  
    - See your money visually with Pie, Bar, and Line charts.  
-   - Pie chart: Shows how much money is debit vs credit.  
-   - Bar chart: Shows total by payment mode.  
-   - Line chart: Shows how your balance changes over time.  
+   - Pie chart: Shows debit vs credit.  
+   - Bar chart: Shows totals by payment mode.  
+   - Line chart: Shows balance changes over time.  
 
 ---
 
 ## Workflow Diagram
 
-![Book Management Workflow](public/flow-diagram.png)  
+<img width="1536" height="1024" alt="flow-diagram" src="https://github.com/user-attachments/assets/846dcc84-7083-4f36-97fc-b355d8485154" />
+ 
 
-*Visual representation of the process from creating a book → adding/sending transactions → viewing stats.*
+*Visual representation: create a book → add/send transactions → view stats.*
 
 ---
 
