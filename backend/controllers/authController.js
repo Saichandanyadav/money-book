@@ -19,7 +19,7 @@ exports.signup = async (req, res) => {
       const token = generateToken(user._id);
       res.status(201).json({
         token,
-        user: { _id: user._id, username: user.username, email: user.email, country: user.country },
+        user: { _id: user._id, username: user.username, email: user.email, country: user.country, createdAt: user.createdAt },
         toast: { title: "Account created", description: "Your account has been created successfully." },
       });
     } else {
@@ -37,7 +37,7 @@ exports.login = async (req, res) => {
     if (user && (await user.matchPassword(password))) {
       res.json({
         token: generateToken(user._id),
-        user: { _id: user._id, username: user.username, email: user.email, country: user.country },
+        user: { _id: user._id, username: user.username, email: user.email, country: user.country, createdAt: user.createdAt },
         toast: { title: "Login successful", description: "Welcome back!" },
       });
     } else {

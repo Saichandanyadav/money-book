@@ -6,12 +6,23 @@ import Signup from "./pages/SignupPage";
 import Dashboard from "./pages/Dashboard";
 import BookPage from "./pages/BookPage";
 import TransactionDetails from "./components/TransactionDetails";
+import AccountPage from "./pages/AccountPage";
 import ChangePasswordPage from "./pages/ChangePasswordPage";
 import ToastContainer from "./components/ToastContainer";
+import Navbar from "./components/Navbar";
+import SupportPage from "./pages/SupportPage";
+import PrivacyPage from "./pages/PrivacyPage";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
-  return token ? children : <Navigate to="/login" replace />;
+  return token ? (
+    <>
+      <Navbar />
+      {children}
+    </>
+  ) : (
+    <Navigate to="/login" replace />
+  );
 };
 
 const PublicRoute = ({ children }) => {
@@ -39,11 +50,14 @@ const RoutesWrapper = () => {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/support" element={<SupportPage />} />
+      <Route path="/privacy" element={<PrivacyPage />} />
       <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
       <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
       <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
       <Route path="/book/:id" element={<PrivateRoute><BookPage /></PrivateRoute>} />
       <Route path="/transaction/:id" element={<PrivateRoute><TransactionDetails /></PrivateRoute>} />
+      <Route path="/account" element={<PrivateRoute><AccountPage /></PrivateRoute>} />
       <Route path="/change-password" element={<PrivateRoute><ChangePasswordPage /></PrivateRoute>} />
     </Routes>
   );
