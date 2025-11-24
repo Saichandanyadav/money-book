@@ -1,15 +1,19 @@
-# Chandan Cash Calculator - (Book Management System)
+# Money Book - (Book Management System)
 
-The Chandan Cash Calculator is a simple and easy-to-use tool to manage your money and transactions.  
+The Money Book is a simple and easy-to-use tool to manage your money and transactions.  
 You can create books, track money coming in (credit) and going out (debit), and see visual stats.  
 It is fully responsive, so you can use it on desktop, tablet, or mobile.  
-This project is perfect for personal finance or small business bookkeeping.
+This project is perfect for personal finance or small business bookkeeping.  
+You can also export your transactions in PDF format for record-keeping or sharing.
+
+<img width="1024" height="1024" alt="AppLogo1" src="https://github.com/user-attachments/assets/08c88a90-8d57-46a2-b01f-f0370af4f056" />
 
 ---
 
 ## Live Links & Repository
 
 - **Frontend (Vercel):** [https://chandan-cash-calculator.vercel.app/](https://chandan-cash-calculator.vercel.app/)  
+- **Extra Domain (Vercel):** [https://chandan-money-book.vercel.app/](https://chandan-money-book.vercel.app/)  
 - **Backend (Render):** [https://chandan-cash-calculator.onrender.com/](https://chandan-cash-calculator.onrender.com/)  
 - **GitHub Repository:** [https://github.com/Saichandanyadav/chandan-cash-calculator](https://github.com/Saichandanyadav/chandan-cash-calculator)  
 
@@ -39,14 +43,16 @@ This project is perfect for personal finance or small business bookkeeping.
    - Bar chart: Shows totals by payment mode.  
    - Line chart: Shows balance changes over time.  
 
+6. **Export Transactions**  
+   - Export all your transactions in PDF format for offline records or sharing.
+
 ---
 
 ## Workflow Diagram
 
 <img width="1536" height="1024" alt="flow-diagram" src="https://github.com/user-attachments/assets/846dcc84-7083-4f36-97fc-b355d8485154" />
  
-
-*Visual representation: create a book → add/send transactions → view stats.*
+*Visual representation: create a book → add/send transactions → view stats → export transactions.*
 
 ---
 
@@ -128,6 +134,7 @@ Frontend runs at `http://localhost:3000`.
 * Add or send money with multiple payment modes
 * Filter transactions by date or payment mode
 * Visual stats for better money management
+* Export transactions in PDF format
 * Fully responsive design
 
 ---
@@ -142,3 +149,13 @@ Frontend runs at `http://localhost:3000`.
 ## License
 
 MIT License
+
+---
+
+## Developer
+
+**Sai Chandan Gundaboina**
+
+* GitHub: [https://github.com/Saichandanyadav](https://github.com/Saichandanyadav)
+* LinkedIn: [https://www.linkedin.com/in/saichandanyadav/](https://www.linkedin.com/in/saichandanyadav/)
+* Email: [saichandhanyadav2002@gmail.com](mailto:saichandhanyadav2002@gmail.com)
