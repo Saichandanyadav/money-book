@@ -15,7 +15,7 @@ You can also export your transactions in PDF format for record-keeping or sharin
 - **Frontend (Vercel):** [https://chandan-cash-calculator.vercel.app/](https://chandan-cash-calculator.vercel.app/)  
 - **Extra Domain (Vercel):** [https://chandan-money-book.vercel.app/](https://chandan-money-book.vercel.app/)  
 - **Backend (Render):** [https://chandan-cash-calculator.onrender.com/](https://chandan-cash-calculator.onrender.com/)  
-- **GitHub Repository:** [https://github.com/Saichandanyadav/chandan-cash-calculator](https://github.com/Saichandanyadav/chandan-cash-calculator)  
+- **GitHub Repository:** [https://github.com/Saichandanyadav/money-book](https://github.com/Saichandanyadav/money-book)  
 
 ---
 
