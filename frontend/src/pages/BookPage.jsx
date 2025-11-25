@@ -20,7 +20,7 @@ const BookPage = () => {
     const navigate = useNavigate();
     const [book, setBook] = useState(null);
     const [transactions, setTransactions] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+       const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [showModal, setShowModal] = useState(false);
     const [showAddPaymentModal, setShowAddPaymentModal] = useState(false);
@@ -38,29 +38,30 @@ const BookPage = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const symbol = getCurrencySymbol(user?.country);
 
-    const fetchBook = useCallback(async (page = 1, currentFilter = { modeOfPayment: "", status: "", date: "" }, setLoad = true) => {
-        if (setLoad) setIsLoading(true);
+    const fetchTransactionsAndBook = useCallback(async (page, currentFilter) => {
+        setIsLoading(true);
         try {
             const params = new URLSearchParams();
-            params.append('page', page);
-            params.append('limit', TRANSACTIONS_PER_PAGE);
-            if (currentFilter.modeOfPayment) params.append('modeOfPayment', currentFilter.modeOfPayment);
-            if (currentFilter.status) params.append('status', currentFilter.status);
+            params.append("page", page);
+            params.append("limit", TRANSACTIONS_PER_PAGE);
+            if (currentFilter.modeOfPayment) params.append("modeOfPayment", currentFilter.modeOfPayment);
+            if (currentFilter.status) params.append("status", currentFilter.status);
 
-            const bookRes = await api.get(`/books/${id}`);
-            const txRes = await api.get(`/transactions/${id}?${params.toString()}`);
-            
+            const [bookRes, txRes] = await Promise.all([
+                api.get(`/books/${id}`),
+                api.get(`/transactions/${id}?${params.toString()}`)
+            ]);
+
             setBook(bookRes.data.book || bookRes.data);
             setTransactions(txRes.data.transactions || []);
             setCurrentPage(txRes.data.currentPage);
             setTotalPages(txRes.data.totalPages);
-
         } catch {
             setBook(null);
             setTransactions([]);
             setTotalPages(1);
         } finally {
-            if (setLoad) setIsLoading(false);
+            setIsLoading(false);
         }
     }, [id]);
 
@@ -74,22 +75,14 @@ const BookPage = () => {
     }, [id]);
 
     useEffect(() => {
-        fetchBook(1, filter, true);
-    }, [fetchBook, filter]);
-
-    useEffect(() => {
+        fetchTransactionsAndBook(1, filter);
         fetchOverview();
-        const interval = setInterval(() => {
-            fetchBook(currentPage, filter, false);
-            fetchOverview();
-        }, 5000);
-        return () => clearInterval(interval);
-    }, [fetchBook, fetchOverview, currentPage, filter]);
+    }, [fetchTransactionsAndBook, fetchOverview, filter]);
 
     const handlePageChange = (page) => {
         if (page >= 1 && page <= totalPages) {
             setCurrentPage(page);
-            fetchBook(page, filter);
+            fetchTransactionsAndBook(page, filter);
         }
     };
 
@@ -111,7 +104,7 @@ const BookPage = () => {
         if (pendingFilter.modeOfPayment !== filter.modeOfPayment || pendingFilter.status !== filter.status) {
             setFilter(pendingFilter);
             setCurrentPage(1);
-            fetchBook(1, pendingFilter);
+            fetchTransactionsAndBook(1, pendingFilter);
         }
     };
 
@@ -120,7 +113,7 @@ const BookPage = () => {
         setFilter(newFilter);
         setPendingFilter(newFilter);
         setCurrentPage(1);
-        fetchBook(1, newFilter);
+        fetchTransactionsAndBook(1, newFilter);
     };
 
     const handleAddCustomPayment = async (name) => {
@@ -139,7 +132,7 @@ const BookPage = () => {
             await api.post(url, { ...form, amount: Number(form.amount), bookId: id });
             setShowModal(false);
             setForm({ name: "", amount: "", modeOfPayment: "", description: "" });
-            fetchBook(1, filter);
+            fetchTransactionsAndBook(1, filter);
             fetchOverview();
         } catch {}
     };
@@ -148,7 +141,8 @@ const BookPage = () => {
         try {
             await api.put(`/books/toggle-status/${id}`);
             setConfirmModal({ type: "", visible: false });
-            fetchBook();
+            fetchTransactionsAndBook(currentPage, filter);
+            fetchOverview();
         } catch {}
     };
 
@@ -163,23 +157,21 @@ const BookPage = () => {
     const handleExportPdf = async () => {
         try {
             const params = new URLSearchParams();
-            if (filter.modeOfPayment) params.append('modeOfPayment', filter.modeOfPayment);
-            if (filter.status) params.append('status', filter.status);
+            if (filter.modeOfPayment) params.append("modeOfPayment", filter.modeOfPayment);
+            if (filter.status) params.append("status", filter.status);
 
             const response = await api.get(`/transactions/export/${id}?${params.toString()}`, {
-                responseType: 'blob',
+                responseType: "blob",
             });
 
-            const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-            const link = document.createElement('a');
+            const url = window.URL.createObjectURL(new Blob([response.data], { type: "application/pdf" }));
+            const link = document.createElement("a");
             link.href = url;
-            link.setAttribute('download', `${book.name}_Statement_${new Date().toISOString().slice(0, 10)}.pdf`);
+            link.setAttribute("download", `${book.name}_Statement_${new Date().toISOString().slice(0, 10)}.pdf`);
             document.body.appendChild(link);
             link.click();
             link.remove();
-        } catch (error) {
-            console.error("PDF export failed:", error);
-        }
+        } catch {}
     };
 
     useEffect(() => {
@@ -197,7 +189,7 @@ const BookPage = () => {
             <div className="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
-    
+
     const paymentFilterOptions = [
         { label: "All Modes", value: "" },
         ...paymentMethods.map(mode => ({ label: mode, value: mode })),
@@ -218,7 +210,6 @@ const BookPage = () => {
     const isFilterPending = pendingFilter.modeOfPayment !== filter.modeOfPayment || pendingFilter.status !== filter.status;
 
     return (
-        
         <div className="p-4 sm:p-6 max-w-7xl mx-auto bg-gradient-to-b from-white to-sky-50 min-h-screen relative pb-20 sm:pb-4">
 
             <BookHeader 
@@ -295,8 +286,8 @@ const BookPage = () => {
                 >
                     <p className="text-gray-700">
                         Are you sure you want to {confirmModal.type === "toggleStatus" ? 
-                        (book.isActive ? "deactivate this book? It will prevent new transactions." : "activate this book? New transactions will be allowed.") :
-                        "permanently delete this book and all its transactions? This action cannot be undone."}
+                        (book.isActive ? "deactivate this book?" : "activate this book?") :
+                        "permanently delete this book and all its transactions?"}
                     </p>
                 </Modal>
             )}

@@ -3,186 +3,218 @@ const { getCurrencySymbol } = require("./currencyUtils");
 const path = require("path");
 
 const LOGO_PATH = path.join(__dirname, "../public/AppLogo1.png");
+const FONT_PATH = path.join(__dirname, "../fonts/NotoSans-VariableFont_wdth,wght.ttf");
 
 const PRIMARY_COLOR = "#0369A1";
-const ACCENT_COLOR = "#0EA5E9";
 const TEXT_COLOR = "#334155";
 const BLACK_COLOR = "#000000";
 const TABLE_HEADER_BG = "#E0F2FE";
-const DEVELOPER_NAME = "Sai Chandan Gundaboina"; 
+const FOOTER_NAME = "Sai Chandan Gundaboina";
+const LINKEDIN_URL = "https://www.linkedin.com/in/saichandanyadav/";
 
 const generateTransactionPdf = (res, user, book, transactions, filters) => {
-    const doc = new PDFDocument({ margin: 40, layout: "portrait" });
-    const PADDING_X = 40;
-    const LINKEDIN_URL = "https://www.linkedin.com/in/saichandanyadav/"; 
-    const FOOTER_NAME = "Sai Chandan Chandan";
+  const doc = new PDFDocument({ margin: 40, layout: "portrait" });
+  const PADDING_X = 40;
 
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader(
-        "Content-Disposition",
-        `attachment; filename="${book.name}_transactions.pdf"`
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="${book.name}_transactions.pdf"`
+  );
+
+  const currencySymbol = getCurrencySymbol(user.country);
+
+  doc.registerFont("Body", FONT_PATH);
+  doc.registerFont("Body-Bold", FONT_PATH);
+  doc.pipe(res);
+  doc.font("Body");
+
+  const renderHeader = () => {
+    const top = 40;
+    const sectionY = 150;
+
+    try {
+      doc.image(LOGO_PATH, PADDING_X, top, { width: 55, height: 55 });
+    } catch (e) {}
+
+    doc
+      .fillColor(PRIMARY_COLOR)
+      .font("Body-Bold")
+      .fontSize(26)
+      .text("Money Book Ledger", PADDING_X + 70, top + 5);
+
+    const devPrefix = "Developed by: ";
+    const devY = top + 40;
+
+    doc
+      .fillColor(TEXT_COLOR)
+      .font("Body")
+      .fontSize(11)
+      .text(`${devPrefix}${FOOTER_NAME}`, PADDING_X + 70, devY);
+
+    const prefixWidth = doc.widthOfString(devPrefix);
+    const nameWidth = doc.widthOfString(FOOTER_NAME);
+
+    doc.link(PADDING_X + 70 + prefixWidth, devY, nameWidth, 11, LINKEDIN_URL);
+
+    doc
+      .fillColor(TEXT_COLOR)
+      .font("Body-Bold")
+      .fontSize(15)
+      .text("Transaction Report", PADDING_X, 115);
+
+    doc
+      .moveTo(PADDING_X, 135)
+      .lineTo(doc.page.width - PADDING_X, 135)
+      .lineWidth(2)
+      .stroke(PRIMARY_COLOR);
+
+    doc
+      .font("Body")
+      .fontSize(11)
+      .fillColor(TEXT_COLOR)
+      .text(`Book: ${book.name}`, PADDING_X, sectionY)
+      .moveDown(0.6)
+      .text(`User: ${user.username}`, PADDING_X, doc.y)
+      .moveDown(0.6);
+
+    doc.text(`Email: ${user.email}`, doc.page.width / 2, sectionY);
+
+    doc.text(
+      `Filters → Status: ${filters.status || "All"} | Mode: ${filters.modeOfPayment || "All"}`,
+      doc.page.width / 2,
+      sectionY + 16
     );
 
-    const currencySymbol = getCurrencySymbol(user.country);
-    doc.pipe(res);
+    doc.text(
+      `Generated: ${new Date().toLocaleDateString()}`,
+      PADDING_X,
+      sectionY,
+      { align: "right", width: doc.page.width - 2 * PADDING_X }
+    );
 
-    const renderHeader = () => {
-        const topY = 40;
-        const infoYStart = 140;
+    doc
+      .moveTo(PADDING_X, sectionY + 40)
+      .lineTo(doc.page.width - PADDING_X, sectionY + 40)
+      .lineWidth(0.5)
+      .stroke("#CBD5E1");
 
-        try {
-            doc.image(LOGO_PATH, PADDING_X, topY, { width: 50, height: 50 });
-        } catch (e) {}
+    doc.y = sectionY + 55;
+  };
 
-        doc.fillColor(PRIMARY_COLOR).fontSize(28).font("Helvetica-Bold")
-            .text("Money Book Ledger", PADDING_X + 70, topY + 5);
+  const renderFooter = (totalPages) => {
+    const page = doc.page.index + 1;
+    const y = doc.page.height - 30;
 
-        const devText = `Developed by: ${DEVELOPER_NAME}`;
-        const devTextX = PADDING_X + 70;
-        const devTextY = topY + 38;
-        
-        doc.fillColor(TEXT_COLOR).fontSize(10).font("Helvetica")
-            .text(devText, devTextX, devTextY);
-        
-        const prefix = "Developed by: ";
-        const prefixWidth = doc.widthOfString(prefix);
-        const nameWidth = doc.widthOfString(DEVELOPER_NAME);
-        
-        doc.link(devTextX + prefixWidth, devTextY, nameWidth, 10, LINKEDIN_URL);
+    doc
+      .fillColor(BLACK_COLOR)
+      .font("Body")
+      .fontSize(8)
+      .text(FOOTER_NAME, PADDING_X, y);
 
-        doc.fillColor(TEXT_COLOR).fontSize(14).font("Helvetica-Bold")
-            .text("Transaction Report", PADDING_X, 115);
+    const nameWidth = doc.widthOfString(FOOTER_NAME);
+    doc.link(PADDING_X, y, nameWidth, 8, LINKEDIN_URL);
 
-        doc.moveTo(PADDING_X, 135).lineTo(doc.page.width - PADDING_X, 135).lineWidth(3).stroke(PRIMARY_COLOR);
-
-        doc.fontSize(9).fillColor(TEXT_COLOR).font("Helvetica")
-            .text(`Book: ${book.name}`, PADDING_X, infoYStart)
-            .text(`User: ${user.username}`, PADDING_X, infoYStart + 15)
-            .text(`Email: ${user.email}`, doc.page.width / 2, infoYStart + 15);
-
-        const filterText = `Filters: Status: ${filters.status || "All"}, Mode: ${filters.modeOfPayment || "All"}`;
-        doc.text(filterText, doc.page.width / 2, infoYStart);
-
-        doc.text(`Generated On: ${new Date().toLocaleDateString()}`, PADDING_X, infoYStart, {
-            align: "right",
-            width: doc.page.width - 2 * PADDING_X
-        });
-
-        doc.moveTo(PADDING_X, infoYStart + 38).lineTo(doc.page.width - PADDING_X, infoYStart + 38).lineWidth(0.5).stroke("#CBD5E1");
-        
-        doc.y = infoYStart + 45; 
-    };
-
-    const renderFooter = (totalPages) => {
-        const pageNumber = doc.page.index + 1;
-        const footerY = doc.page.height - 30;
-        const nameText = FOOTER_NAME;
-        
-        doc.fontSize(7).fillColor(BLACK_COLOR).font("Helvetica");
-
-        const nameWidth = doc.widthOfString(nameText);
-        
-        doc.text(nameText, PADDING_X, footerY, { align: "left" });
-        
-        doc.link(
-            PADDING_X, 
-            footerY,
-            nameWidth,
-            7, 
-            LINKEDIN_URL
-        );
-
-        doc.text(`Page ${pageNumber} of ${totalPages}`, PADDING_X, footerY, { align: "right", width: doc.page.width - 2 * PADDING_X });
-
-        doc.moveTo(PADDING_X, footerY - 5).lineTo(doc.page.width - PADDING_X, footerY - 5).lineWidth(0.5).stroke("#E2E8F0");
-    };
-
-    const renderTableHeaders = (y) => {
-        const headers = ["Date", "Name", "Amount", "Status", "Mode", "Description"];
-        const widths = [60, 110, 80, 60, 80, 150];
-        let x = PADDING_X;
-        const headerWidth = widths.reduce((sum, w) => sum + w, 0);
-
-        doc.rect(PADDING_X, y - 5, headerWidth, 22).fill(TABLE_HEADER_BG);
-        doc.fontSize(10).fillColor(PRIMARY_COLOR).font("Helvetica-Bold");
-
-        headers.forEach((h, i) => {
-            doc.text(h, x, y, { width: widths[i] });
-            x += widths[i];
-        });
-
-        doc.font("Helvetica");
-        doc.y = y + 22;
-    };
-
-    doc.on("pageAdded", () => {
-        renderHeader();
-        renderTableHeaders(doc.y + 10);
+    doc.text(`Page ${page} of ${totalPages}`, PADDING_X, y, {
+      align: "right",
+      width: doc.page.width - 2 * PADDING_X,
     });
 
+    doc
+      .moveTo(PADDING_X, y - 6)
+      .lineTo(doc.page.width - PADDING_X, y - 6)
+      .lineWidth(0.4)
+      .stroke("#E2E8F0");
+  };
+
+  const renderTableHeaders = (y) => {
+    const headers = ["Date", "Name", "Amount", "Status", "Mode", "Description"];
+    const widths = [70, 100, 70, 70, 80, 130];
+    const totalWidth = widths.reduce((a, b) => a + b, 0);
+
+    doc.rect(PADDING_X, y - 6, totalWidth, 26).fill(TABLE_HEADER_BG);
+    doc.fillColor(PRIMARY_COLOR).font("Body-Bold").fontSize(11);
+
+    let x = PADDING_X;
+    headers.forEach((head, i) => {
+      doc.text(head, x, y, { width: widths[i] });
+      x += widths[i];
+    });
+
+    doc.font("Body");
+    doc.y = y + 28;
+  };
+
+  doc.on("pageAdded", () => {
     renderHeader();
+    renderTableHeaders(doc.y + 10);
+  });
 
-    doc.fillColor(PRIMARY_COLOR).fontSize(18).font("Helvetica-Bold")
-        .text(
-            `Current Balance: ${currencySymbol}${book.totalAmount.toFixed(2)}`,
-            PADDING_X,
-            doc.y + 5,
-            { align: "right", width: doc.page.width - 2 * PADDING_X }
-        );
+  renderHeader();
 
-    doc.moveDown(1.5);
-
-    renderTableHeaders(doc.y);
-    
-    const widths = [60, 110, 80, 60, 80, 150];
-    let currentY = doc.y;
-    const rowHeight = 25;
-    const maxBodyY = doc.page.height - 50;
-
-    transactions.forEach((tx) => {
-        if (currentY + rowHeight + 5 > maxBodyY) {
-            doc.addPage();
-            currentY = doc.y;
-        }
-
-        let x = PADDING_X;
-        
-        const date = new Date(tx.createdAt).toLocaleDateString();
-        const amount = `${currencySymbol}${tx.amount.toFixed(2)}`;
-        const statusText = tx.status.charAt(0).toUpperCase() + tx.status.slice(1);
-        const statusColor = tx.status === "debit" ? "#DC2626" : "#16A34A";
-
-        doc.fontSize(9).fillColor(TEXT_COLOR);
-        doc.text(date, x, currentY, { width: widths[0] }); x += widths[0];
-        doc.text(tx.name, x, currentY, { width: widths[1] }); x += widths[1];
-        doc.text(amount, x, currentY, { width: widths[2], align: "left" }); x += widths[2];
-
-        doc.fillColor(statusColor).font("Helvetica-Bold")
-            .text(statusText, x, currentY, { width: widths[3] });
-
-        x += widths[3];
-
-        doc.fillColor(TEXT_COLOR).font("Helvetica")
-            .text(tx.modeOfPayment, x, currentY, { width: widths[4] });
-
-        x += widths[4];
-
-        doc.text(tx.description || "-", x, currentY, { width: widths[5] });
-
-        currentY += rowHeight;
-
-        doc.moveTo(PADDING_X, currentY - 5).lineTo(doc.page.width - PADDING_X, currentY - 5).lineWidth(0.2).stroke("#E2E8F0");
-        doc.moveDown(0.2);
+  doc
+    .fillColor(PRIMARY_COLOR)
+    .fontSize(18)
+    .font("Body-Bold")
+    .text(`Current Balance: ${currencySymbol}${book.totalAmount.toFixed(2)}`, PADDING_X, doc.y, {
+      align: "right",
+      width: doc.page.width - 2 * PADDING_X,
     });
 
-    const totalPages = doc.page.count;
+  doc.moveDown(1.5);
+  renderTableHeaders(doc.y);
 
-    for (let i = 0; i < totalPages; i++) {
-        doc.switchToPage(i);
-        renderFooter(totalPages);
+  const widths = [70, 100, 70, 70, 80, 130];
+  const rowHeight = 28;
+  let y = doc.y;
+  const maxY = doc.page.height - 50;
+
+  transactions.forEach((tx) => {
+    if (y + rowHeight + 5 > maxY) {
+      doc.addPage();
+      y = doc.y;
     }
 
-    doc.end();
+    const date = new Date(tx.createdAt).toLocaleDateString();
+    const amount = `${currencySymbol}${tx.amount.toFixed(2)}`;
+    const statusColor = tx.status === "debit" ? "#DC2626" : "#16A34A";
+
+    let x = PADDING_X;
+    doc.fillColor(TEXT_COLOR).fontSize(10).font("Body");
+    doc.text(date, x, y, { width: widths[0] });
+    x += widths[0];
+
+    doc.text(tx.name, x, y, { width: widths[1] });
+    x += widths[1];
+
+    doc.text(amount, x, y, { width: widths[2] });
+    x += widths[2];
+
+    doc.fillColor(statusColor).font("Body-Bold");
+    doc.text(tx.status.toUpperCase(), x, y, { width: widths[3] });
+    x += widths[3];
+
+    doc.fillColor(TEXT_COLOR).font("Body");
+    doc.text(tx.modeOfPayment, x, y, { width: widths[4] });
+    x += widths[4];
+
+    doc.text(tx.description || "-", x, y, { width: widths[5] });
+    y += rowHeight;
+
+    doc
+      .moveTo(PADDING_X, y - 6)
+      .lineTo(doc.page.width - PADDING_X, y - 6)
+      .lineWidth(0.3)
+      .stroke("#E2E8F0");
+  });
+
+  const totalPages = doc.page.count;
+  for (let i = 0; i < totalPages; i++) {
+    doc.switchToPage(i);
+    renderFooter(totalPages);
+  }
+
+  doc.end();
 };
 
 module.exports = { generateTransactionPdf };
