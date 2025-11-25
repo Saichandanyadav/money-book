@@ -20,7 +20,7 @@ exports.createBook = async (req, res) => {
                 status: initialStatus,
                 modeOfPayment: initialMode || "Cash",
                 amount: totalAmount,
-                description: `Initial balance set for "${book.name}" book.`,
+                description: description || `Initial balance set for "${book.name}" book.`,
             });
         }
 

@@ -1,11 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FaGithub, FaLinkedin, FaTwitter, FaEnvelope } from "react-icons/fa";
-import usePageLoader from "../hooks/usePageLoader";
 
 export default function SupportPage() {
   const navigate = useNavigate();
-  const loading = usePageLoader();
 
   const contacts = [
     { name: "Email", link: "mailto:saichandhanyadav2002@gmail.com", icon: <FaEnvelope className="text-white" />, bgColor: "bg-red-500" },
@@ -13,14 +11,6 @@ export default function SupportPage() {
     { name: "LinkedIn", link: "https://linkedin.com/in/saichandanyadav", icon: <FaLinkedin className="text-white" />, bgColor: "bg-blue-700" },
     { name: "Twitter", link: "https://twitter.com/saichandanyadav", icon: <FaTwitter className="text-white" />, bgColor: "bg-sky-400" }
   ];
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-sky-100 flex flex-col items-center justify-start px-4 py-12 relative">

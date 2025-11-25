@@ -12,6 +12,8 @@ import ToastContainer from "./components/ToastContainer";
 import Navbar from "./components/Navbar";
 import SupportPage from "./pages/SupportPage";
 import PrivacyPage from "./pages/PrivacyPage";
+import { useApiLoader } from "./hooks/useApiLoader";
+import ApiGlobalLoader from "./components/ApiGlobalLoader";
 
 const PrivateRoute = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -64,8 +66,10 @@ const RoutesWrapper = () => {
 };
 
 export default function App() {
+  const apiLoading = useApiLoader();
   return (
     <Router>
+      <ApiGlobalLoader loading={apiLoading} />
       <ToastContainer />
       <RoutesWrapper />
     </Router>

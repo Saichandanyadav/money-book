@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 import { PasswordInput } from "../components/PasswordInput";
 import useCurrencyData from "../hooks/useCurrencyData";
-import usePageLoader from "../hooks/usePageLoader";
 
 export default function Signup() {
   const navigate = useNavigate();
   const { countries, isLoading } = useCurrencyData();
-  const loading = usePageLoader();
   const [form, setForm] = useState({ username: "", email: "", password: "", country: "India" });
 
   const showToast = (title, description) => {
@@ -24,12 +22,11 @@ export default function Signup() {
       await api.post("/auth/signup", form);
       navigate("/login", { replace: true });
     } catch (error) {
-      const msg = error.response?.data?.toast?.description || "Unable to create account. Please try again.";
-      showToast("Signup Failed", msg);
+      
     }
   };
 
-  if (loading || isLoading) {
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin" />

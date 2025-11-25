@@ -1,18 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import usePageLoader from "../hooks/usePageLoader";
 
 export default function PrivacyPage() {
   const navigate = useNavigate();
-  const loading = usePageLoader();
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-sky-100 px-6 py-12 relative">

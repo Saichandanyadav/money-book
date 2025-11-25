@@ -1,19 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { FiLogIn, FiUserPlus } from "react-icons/fi";
-import usePageLoader from "../hooks/usePageLoader";
 
 export default function Landing() {
   const navigate = useNavigate();
-  const loading = usePageLoader();
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 to-white">
