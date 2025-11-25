@@ -4,6 +4,7 @@ import BookCard from "../components/BookCard";
 import Modal from "../components/Modal";
 import usePaymentMethods from "../hooks/usePaymentMethods";
 import AddPaymentModal from "../components/AddPaymentModal";
+import CustomerSupport from "../components/CustomerSupport";
 
 const OTHER_OPTION = "other-custom-option";
 
@@ -230,6 +231,7 @@ export default function Dashboard() {
                     onAdd={handleAddCustomPayment}
                 />
             )}
+            <CustomerSupport />
         </div>
     );
 }

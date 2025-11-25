@@ -2,3 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes smoothPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.smooth-pulse {
+  animation: smoothPulse 1.8s ease-in-out infinite;
+}

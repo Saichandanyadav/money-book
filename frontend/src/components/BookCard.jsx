@@ -27,22 +27,45 @@ export default function BookCard({ book, fetchBooks }) {
   return (
     <div
       onClick={() => navigate(`/book/${book._id}`)}
-      className={`bg-white border rounded-xl shadow-lg p-4 relative cursor-pointer ${!book.isActive ? "opacity-60" : ""}`}
+      className={`relative bg-white cursor-pointer group 
+      w-full h-full 
+      rounded-xl shadow-lg border 
+      transition-transform duration-300 
+      hover:-translate-y-1 
+      ${!book.isActive ? "opacity-60" : ""}`}
     >
-      <div className="flex justify-between items-start">
-        <div>
-          <h2 className="text-lg font-bold text-sky-700">{book.name}</h2>
-          <p className="text-sm text-gray-600">Status: {book.isActive ? "Active" : "Deactivated"}</p>
-        </div>
-        <div className="relative" onClick={e => e.stopPropagation()}>
-          <button onClick={() => setShowMenu(!showMenu)} className="text-xl font-bold px-2 py-1">⋮</button>
-          {showMenu && (
-            <div className="absolute right-0 top-6 bg-white border rounded shadow-md z-10 w-44">
-              <button onClick={() => navigate(`/book/${book._id}`)} className="block px-4 py-2 hover:bg-gray-100 w-full text-left">
-                View Book
-              </button>
-            </div>
-          )}
+      <div className="absolute left-0 top-0 w-3 h-full bg-sky-600 rounded-l-xl"></div>
+      <div className="absolute left-3 top-0 w-2 h-full bg-sky-500"></div>
+      <div className="absolute left-5 top-0 w-[6px] h-full bg-sky-400 opacity-70"></div>
+
+      <div className="pl-8 pr-4 py-4">
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-lg font-bold text-sky-700">{book.name}</h2>
+            <p className="text-sm text-gray-600">
+              Status: {book.isActive ? "Active" : "Deactivated"}
+            </p>
+          </div>
+
+          <div className="relative" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowMenu(!showMenu)}
+              className="text-xl font-bold px-2 py-1"
+            >
+              ⋮
+            </button>
+
+            {showMenu && (
+              <div className="absolute right-0 top-6 bg-white border rounded shadow-md z-10 w-44">
+                <button
+                  onClick={() => navigate(`/book/${book._id}`)}
+                  className="block px-4 py-2 hover:bg-gray-100 w-full text-left"
+                >
+                  View Book
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
@@ -56,7 +79,11 @@ export default function BookCard({ book, fetchBooks }) {
               : "Confirm Deletion"
           }
           onClose={() => setShowConfirm({ type: "", visible: false })}
-          onSubmit={showConfirm.type === "toggleStatus" ? handleToggleStatus : handleDelete}
+          onSubmit={
+            showConfirm.type === "toggleStatus"
+              ? handleToggleStatus
+              : handleDelete
+          }
         >
           <p>
             Are you sure you want to{" "}
